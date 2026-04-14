@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f65b7add0bb60be4798ffce092e8d7ce, type: 3}
+  m_Name: StatusEffects
+  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectSO
+  effectName: Bleed
+  icon: {fileID: 0}
+  statusType: 0
+  duration: 5
+  tickMoment: 1
+  powerTick: 15
+  applicationMessage: 1
+  tickMessage: Bleeding out
