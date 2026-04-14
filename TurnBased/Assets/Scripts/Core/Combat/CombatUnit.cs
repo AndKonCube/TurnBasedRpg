@@ -43,7 +43,7 @@ public class CombatUnit : MonoBehaviour
         public void SpendMP(int amount)
     {
         currentMP = Mathf.Clamp(currentMP+amount, 0, data.baseMP);
-        onHPChanged.Raise();
+        onMPChanged.Raise();
     }
 
     private bool HasEnouhgMana(int amount)
