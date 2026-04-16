@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f65b7add0bb60be4798ffce092e8d7ce, type: 3}
-  m_Name: StatusEffects
+  m_Name: Bleed
   m_EditorClassIdentifier: Assembly-CSharp::StatusEffectSO
   effectName: Bleed
   icon: {fileID: 0}

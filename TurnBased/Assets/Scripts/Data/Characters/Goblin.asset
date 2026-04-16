@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebd9526ae9c038d4887202ac310cf49e, type: 3}
+  m_Name: Goblin
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterDataSO
+  characterName: Goblin
+  baseHP: 100
+  baseMP: 50
+  baseAttack: 25
+  baseDefense: 25
+  baseMagicPower: 25
+  baseSpeed: 15
+  skills:
+  - {fileID: 11400000, guid: 4f286ac8ed2d41a43a395e70590b585c, type: 2}
+  sprite: {fileID: 0}
+  battleAnimator: {fileID: 0}
+  deathSound: {fileID: 0}
+  expirienceReward: 50
+  goldReward: 10

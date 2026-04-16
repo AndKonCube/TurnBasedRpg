@@ -37,7 +37,7 @@ public class SkillDataSO : ScriptableObject
     public CostType costType;
     public int costAmount;
     public int basePower;
-    //public string scalingStat;
+    public string scalingStat;
     public StatusEffectSO statusToApply;
     public float applicationChance;
     public string animationTrigger;

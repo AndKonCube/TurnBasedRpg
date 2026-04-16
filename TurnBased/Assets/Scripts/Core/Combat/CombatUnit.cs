@@ -3,17 +3,17 @@ using UnityEngine;
 
 public class CombatUnit : MonoBehaviour
 {
-    CharacterDataSO data;
+    public CharacterDataSO data;
     private int currentHP;
     private int currentMP;
     private List<StatusEffectInstance> statusEffectInstances;
-    private bool isAlive;
-    private bool isPlayer;
+    public bool isAlive;
+    public bool isPlayer;
     private GameEventSO onUnitDied;
     private GameEventSO onHPChanged;
     private GameEventSO onMPChanged;
 
-    private void Initialize(CharacterDataSO characterData)
+    public void Initialize(CharacterDataSO characterData)
     {
         data = characterData;
         currentHP = characterData.baseHP;

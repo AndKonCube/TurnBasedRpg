@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 06df3b7a16a64274bb534e54c451d3fb, type: 3}
-  m_Name: Mortal_Strike
+  m_Name: BetweenTheEyes
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataSO
-  skillName: Mortal strike
+  skillName: Between The Eyes
   description: 
   icon: {fileID: 0}
   skillCategory: 0
   targetType: 0
   costType: 0
   costAmount: 10
-  basePower: 20
+  basePower: 25
   statusToApply: {fileID: 11400000, guid: 389fb02b8c615ad46b2eb1f473c1d0b4, type: 2}
-  applicationChance: 0
+  applicationChance: 30
   animationTrigger: 
   soundEffect: {fileID: 0}
