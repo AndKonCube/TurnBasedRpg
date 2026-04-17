@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BattleManager : MonoBehaviour
@@ -103,10 +104,22 @@ public class BattleManager : MonoBehaviour
     {
         foreach (CombatUnit unit in Enumerable.Concat<CombatUnit>(playerUnits, enemyUnits))
         {
-            StatusEffectHandler.Tick(unit);
+            StatusEffectHandler.Tick(unit,TickMoment.EndOfTurn);
         }
-
     }
+
+    private void AdvanceTurn()
+    {
+        if (turnOrder.Count == 0)
+        {
+            battleFsm.ChangePhase(BattlePhase.EndOfRound);
+            return;
+        }
+        currentUnit = turnOrder.Dequeue();
+        OnTurnStarted.Raise();
+        PromptPlayerAction();
+    }   
+
     public void CheckBattleOver()
     {
         if (enemyUnits.All(unit => !unit.isAlive))

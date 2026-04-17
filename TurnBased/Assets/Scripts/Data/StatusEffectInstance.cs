@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class StatusEffectInstance : MonoBehaviour
 {
-    private StatusEffectSO statusEffect;
-    private int remainingTurns;
-    private TickMoment tickMoment;
-    private StatusType statusType;
-    private int powerPerTick;
+    public StatusEffectSO statusEffect;
+    public int remainingTurns;
+    public TickMoment tickMoment;
+    public StatusType statusType;
+    public int powerPerTick;
 
     public StatusEffectInstance(StatusEffectSO effect)
     {

@@ -18,7 +18,7 @@ public class CharacterDataSO : ScriptableObject
     public AudioClip deathSound;
     public int expirienceReward;
     public int goldReward;
-    //public AIbehaviorSO aiProfile;
+    public AIBehaviorSO aiProfile;
 
 
 }

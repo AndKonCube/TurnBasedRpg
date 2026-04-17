@@ -6,12 +6,16 @@ public class CombatUnit : MonoBehaviour
     public CharacterDataSO data;
     private int currentHP;
     private int currentMP;
-    private List<StatusEffectInstance> statusEffectInstances;
+    public List<StatusEffectInstance> activeEffects;
     public bool isAlive;
     public bool isPlayer;
-    private GameEventSO onUnitDied;
-    private GameEventSO onHPChanged;
-    private GameEventSO onMPChanged;
+    public int attackModifier;
+    public int defenseModifier;
+    public bool isStunned;
+
+    [SerializeField] private GameEventSO onUnitDied;
+    [SerializeField] private GameEventSO onHPChanged;
+    [SerializeField] private GameEventSO onMPChanged;
 
     public void Initialize(CharacterDataSO characterData)
     {
@@ -19,34 +23,40 @@ public class CombatUnit : MonoBehaviour
         currentHP = characterData.baseHP;
         currentMP = characterData.baseMP;
         isAlive = true;
-        statusEffectInstances = new List<StatusEffectInstance>();
+        activeEffects = new List<StatusEffectInstance>();
     }
 
     public void TakeDamage(int amount)
     {
-        currentHP= currentHP - amount;
+        currentHP = currentHP - amount;
         if (currentHP <= 0)
         {
             currentHP = 0;
             isAlive = false;
-            onUnitDied.Raise();
+            if (onUnitDied != null) onUnitDied.Raise();
         }
-        onHPChanged.Raise();
+        if (onHPChanged != null) onHPChanged.Raise();
     }
 
     public void HealHP(int amount)
     {
-        currentHP = Mathf.Clamp(currentHP+amount, 0, data.baseHP);
-        onHPChanged.Raise();
+        currentHP = Mathf.Clamp(currentHP + amount, 0, data.baseHP);
+        if (onHPChanged != null) onHPChanged.Raise();
     }
 
-        public void SpendMP(int amount)
+    public void RestoreMP(int amount)
     {
-        currentMP = Mathf.Clamp(currentMP+amount, 0, data.baseMP);
-        onMPChanged.Raise();
+        currentMP = Mathf.Clamp(currentMP + amount, 0, data.baseMP);
+        if (onMPChanged != null) onMPChanged.Raise();
     }
 
-    private bool HasEnouhgMana(int amount)
+    public void SpendMP(int amount)
+    {
+        currentMP = Mathf.Clamp(currentMP - amount, 0, data.baseMP);
+        if (onMPChanged != null) onMPChanged.Raise();
+    }
+
+    public bool HasEnoughMP(int amount)
     {
         return currentMP >= amount;
     }

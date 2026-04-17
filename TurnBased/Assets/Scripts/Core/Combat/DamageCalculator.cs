@@ -1,32 +1,36 @@
-using System.Xml.Serialization;
-using Unity.Mathematics;
-using UnityEditor;
 using UnityEngine;
 
-public class DamageCalculator
+public static class DamageCalculator
 {
-    bool isCritical;
-    static void Calculate(CombatUnit attacker,CombatUnit defender,SkillDataSO skill)
+    public static int Calculate(CombatUnit attacker, CombatUnit defender, SkillDataSO skill)
     {
-        if(skill != null) return;
+        int rawDamage = attacker.data.baseAttack = attacker.attackModifier;
+        int reduction = defender.data.baseDefense + defender.defenseModifier;
 
-        int rawDamage = attacker.data.baseAttack;
-        if (skill.scalingStat == "Attack")
+        if (skill != null)
         {
-            rawDamage = attacker.data.baseAttack + skill.basePower;
+            if (skill.scalingStat == "Attack")
+            {
+                rawDamage = attacker.data.baseAttack + skill.basePower;
+            }
+            else if (skill.scalingStat == "MagicPower")
+            {
+                rawDamage = attacker.data.baseMagicPower + skill.basePower;
+            }
         }
-        else if (skill.scalingStat == "MagicPower")
+
+        int finalDamage = Mathf.Max(1, rawDamage - reduction);
+
+        if (IsCritical())
         {
-            rawDamage = attacker.data.baseMagicPower + skill.basePower;
+            finalDamage = finalDamage * 2;
         }
 
-        int reduction = defender.data.baseDefense;
+        return finalDamage;
+    }
 
-        int finalDamage = Mathf.Max(1,rawDamage-reduction);
-
-        if (!isCritical)
-        {
-            
-        }
+    public static bool IsCritical()
+    {
+        return UnityEngine.Random.Range(0.0f, 1.0f) < 0.1f;
     }
 }

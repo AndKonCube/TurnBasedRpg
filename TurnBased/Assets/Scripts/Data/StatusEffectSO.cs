@@ -8,6 +8,7 @@ public enum StatusType
 {
     Poison,
     Burn,
+    Bleed,
     Stun,
     DefenseDown,
     AttackUp
