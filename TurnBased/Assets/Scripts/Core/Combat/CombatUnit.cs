@@ -17,6 +17,11 @@ public class CombatUnit : MonoBehaviour
     [SerializeField] private GameEventSO onHPChanged;
     [SerializeField] private GameEventSO onMPChanged;
 
+    public int GetCurrentHP()
+    {
+        return currentHP;
+    }
+
     public void Initialize(CharacterDataSO characterData)
     {
         data = characterData;

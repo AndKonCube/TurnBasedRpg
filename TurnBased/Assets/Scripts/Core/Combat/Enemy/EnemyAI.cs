@@ -29,11 +29,17 @@ public static class EnemyAI
 
     public static ActionCommand BuildSkillCommand(CombatUnit self, List<CombatUnit> playerUnits)
     {
+        CombatUnit target = GetRandomAliveTarget(playerUnits);
+        if(target == null) return null;
 
+        return new AttackCommand(self, new List<CombatUnit>{target});
     }
 
     public static CombatUnit GetRandomAliveTarget(List<CombatUnit> playerUnits)
     {
+        List<CombatUnit> aliveTargets = playerUnits.FindAll(unit=> unit.isAlive);
+        if(aliveTargets.Count == null) return null;
 
+        return aliveTargets[Random.Range(0,aliveTargets.Count)];
     }
 }

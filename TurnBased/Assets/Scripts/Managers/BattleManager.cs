@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class BattleManager : MonoBehaviour
@@ -9,28 +8,39 @@ public class BattleManager : MonoBehaviour
     List<CombatUnit> playerUnits;
     List<CombatUnit> enemyUnits;
     Queue<CombatUnit> turnOrder;
-    BattleStateMachine battleFsm;
     CombatUnit currentUnit;
     bool playerWon;
     bool isBattleOver;
-    [SerializeField] GameObject playerPanel;
 
+    [SerializeField] BattleStateMachine battleFsm;
+    [SerializeField] GameObject playerPanel;
+    [SerializeField] ActionsMenuUI actionMenuUI;
     [SerializeField] GameEventSO OnBattleEnded;
     [SerializeField] GameEventSO OnTurnStarted;
     [SerializeField] private GameObject combatUnitPrefab;
+    [SerializeField] private BattleLogUI battleLog;
 
+    public bool IsBattleOver()
+    {
+        return isBattleOver;
+    }
 
     void Awake()
     {
         playerUnits = new List<CombatUnit>();
         enemyUnits = new List<CombatUnit>();
     }
+
     void Start()
     {
         if (playerPanel == null) return;
-
-        playerPanel.SetActive(false);
     }
+
+    public CombatUnit GetFirstAliveEnemy()
+    {
+        return enemyUnits.Find(unit => unit.isAlive);
+    }
+
     public void StartBattle(List<CharacterDataSO> playerData, List<CharacterDataSO> enemyData)
     {
         foreach (CharacterDataSO data in playerData)
@@ -59,7 +69,8 @@ public class BattleManager : MonoBehaviour
         List<CombatUnit> allUnits = playerUnits.Concat(enemyUnits).ToList();
         turnOrder = TurnOrderSystem.Sort(allUnits);
         currentUnit = turnOrder.Dequeue();
-        OnTurnStarted.Raise();
+        if (OnTurnStarted != null) OnTurnStarted.Raise();
+        PromptPlayerAction();
     }
 
     public void PromptPlayerAction()
@@ -67,23 +78,43 @@ public class BattleManager : MonoBehaviour
         if (currentUnit.isPlayer)
         {
             playerPanel.SetActive(true);
+            actionMenuUI.Show(currentUnit);
         }
         else
         {
+            playerPanel.SetActive(false);
             battleFsm.ChangePhase(BattlePhase.EnemyTurn);
         }
     }
-    private void SubmitActions(ActionCommand command)
+
+    public void SubmitActions(ActionCommand command)
     {
+        playerPanel.SetActive(false);
         StartCoroutine(ExecuteAction(command));
     }
-    private IEnumerator ExecuteAction(ActionCommand command)
+
+    private IEnumerator ExecuteAction(ActionCommand command, bool autoAdvance = true)
     {
+        CombatUnit actingUnit = command.source;
+
+        if (command is AttackCommand)
+            battleLog.Log(actingUnit.data.characterName + " attacks!");
+        else if (command is SkillCommand skillCmd)
+            battleLog.Log(actingUnit.data.characterName + " uses " + skillCmd.skill.skillName + "!");
+
         command.Execute();
+
+        foreach (CombatUnit unit in playerUnits)
+            battleLog.Log(unit.data.characterName + " HP: " + unit.GetCurrentHP());
+        foreach (CombatUnit unit in enemyUnits)
+            battleLog.Log(unit.data.characterName + " HP: " + unit.GetCurrentHP());
+
         yield return new WaitForSeconds(2);
         CheckBattleOver();
-        AdvanceTurn();
+        if (!isBattleOver && autoAdvance)
+            AdvanceTurn();
     }
+
     public void RunEnemyTurns()
     {
         StartCoroutine(ProcessEnemyTurns());
@@ -91,11 +122,18 @@ public class BattleManager : MonoBehaviour
 
     private IEnumerator ProcessEnemyTurns()
     {
-        while (currentUnit != currentUnit.isPlayer && turnOrder != null)
+        while (!currentUnit.isPlayer)
         {
-            command = currentUnit.aiProfile.DecideAction(currentUnit, playerUnits);
-            yield return ExecuteAction(command);
+            ActionCommand command = EnemyAI.DecideAction(currentUnit, playerUnits);
+            if (command != null)
+            {
+                yield return StartCoroutine(ExecuteAction(command, false));
+            }
+
+            if (turnOrder.Count == 0) break;
+
             currentUnit = turnOrder.Dequeue();
+            if (currentUnit.isPlayer) break;
         }
         battleFsm.ChangePhase(BattlePhase.EndOfRound);
     }
@@ -104,7 +142,7 @@ public class BattleManager : MonoBehaviour
     {
         foreach (CombatUnit unit in Enumerable.Concat<CombatUnit>(playerUnits, enemyUnits))
         {
-            StatusEffectHandler.Tick(unit,TickMoment.EndOfTurn);
+            StatusEffectHandler.Tick(unit, TickMoment.EndOfTurn);
         }
     }
 
@@ -116,9 +154,9 @@ public class BattleManager : MonoBehaviour
             return;
         }
         currentUnit = turnOrder.Dequeue();
-        OnTurnStarted.Raise();
+        if (OnTurnStarted != null) OnTurnStarted.Raise();
         PromptPlayerAction();
-    }   
+    }
 
     public void CheckBattleOver()
     {
@@ -135,14 +173,19 @@ public class BattleManager : MonoBehaviour
             battleFsm.ChangePhase(BattlePhase.BattleOver);
         }
     }
+
     public void DeclareBattleResult()
     {
-        OnBattleEnded.Raise();
-
+        if (OnBattleEnded != null) OnBattleEnded.Raise();
     }
+
     private void CleanUp()
     {
-        Destroy(combatUnitPrefab);
+        foreach (CombatUnit unit in playerUnits)
+            Destroy(unit.gameObject);
+        foreach (CombatUnit unit in enemyUnits)
+            Destroy(unit.gameObject);
+
         playerUnits.Clear();
         enemyUnits.Clear();
     }

@@ -15,7 +15,7 @@ MonoBehaviour:
   characterName: Goblin
   baseHP: 100
   baseMP: 50
-  baseAttack: 25
+  baseAttack: 0
   baseDefense: 25
   baseMagicPower: 25
   baseSpeed: 15
@@ -26,3 +26,4 @@ MonoBehaviour:
   deathSound: {fileID: 0}
   expirienceReward: 50
   goldReward: 10
+  aiProfile: {fileID: 11400000, guid: 56288f036886bac45bd75c79921c4574, type: 2}

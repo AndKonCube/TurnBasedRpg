@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class ActionCommand : MonoBehaviour
+public abstract class ActionCommand 
 {
    public CombatUnit source;
    public List<CombatUnit> targets;

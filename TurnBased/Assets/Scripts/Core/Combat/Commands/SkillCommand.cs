@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SkillCommand : ActionCommand
 {
-    SkillDataSO skill;
+    public SkillDataSO skill;
     public SkillCommand(CombatUnit source, List<CombatUnit> targets, SkillDataSO skill) : base(source, targets)
     {
         this.skill = skill;

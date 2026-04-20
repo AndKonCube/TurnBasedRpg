@@ -1,4 +1,5 @@
 using UnityEngine;
+
 public enum BattlePhase
 {
     StartOfRound,
@@ -8,16 +9,16 @@ public enum BattlePhase
     BattleOver
 }
 
-
 public class BattleStateMachine : MonoBehaviour
 {
     BattlePhase currentPhase;
-    BattleManager battleManager;
+    [SerializeField] BattleManager battleManager;
 
-   public void Start()
+    public void Start()
     {
         ChangePhase(BattlePhase.StartOfRound);
     }
+
     public void ChangePhase(BattlePhase newPhase)
     {
         currentPhase = newPhase;
@@ -25,22 +26,27 @@ public class BattleStateMachine : MonoBehaviour
         switch (newPhase)
         {
             case BattlePhase.StartOfRound:
-            battleManager.BuildTurnOrder();
-            ChangePhase(BattlePhase.PlayerTurn);
-            break;
+                battleManager.BuildTurnOrder();
+                break;
+
             case BattlePhase.PlayerTurn:
-            battleManager.PromptPlayerAction();
-            break;
+                battleManager.PromptPlayerAction();
+                break;
+
             case BattlePhase.EnemyTurn:
-            battleManager.RunEnemyTurns();
-            break;
+                battleManager.RunEnemyTurns();
+                break;
+
             case BattlePhase.EndOfRound:
-            battleManager.TickStatusEffects();
-            battleManager.CheckBattleOver();
-            break;
+                battleManager.TickStatusEffects();
+                battleManager.CheckBattleOver();
+                if (!battleManager.IsBattleOver())
+                    ChangePhase(BattlePhase.StartOfRound);
+                break;
+
             case BattlePhase.BattleOver:
-            battleManager.DeclareBattleResult();
-            break;
+                battleManager.DeclareBattleResult();
+                break;
         }
     }
 }
