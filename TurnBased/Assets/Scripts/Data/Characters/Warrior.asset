@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebd9526ae9c038d4887202ac310cf49e, type: 3}
   m_Name: Warrior
   m_EditorClassIdentifier: Assembly-CSharp::CharacterDataSO
-  characterName: Learie
+  characterName: Warrior
   baseHP: 100
   baseMP: 50
   baseAttack: 25
@@ -26,3 +26,4 @@ MonoBehaviour:
   deathSound: {fileID: 0}
   expirienceReward: 0
   goldReward: 0
+  aiProfile: {fileID: 0}

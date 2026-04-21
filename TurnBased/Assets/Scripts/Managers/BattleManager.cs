@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using UnityEngine;
 
 public class BattleManager : MonoBehaviour
@@ -12,6 +13,7 @@ public class BattleManager : MonoBehaviour
     bool playerWon;
     bool isBattleOver;
 
+    [SerializeField]BattleResultUI battleResultUI;
     [SerializeField] BattleStateMachine battleFsm;
     [SerializeField] GameObject playerPanel;
     [SerializeField] ActionsMenuUI actionMenuUI;
@@ -176,7 +178,17 @@ public class BattleManager : MonoBehaviour
 
     public void DeclareBattleResult()
     {
-        if (OnBattleEnded != null) OnBattleEnded.Raise();
+        OnBattleEnded.Raise();
+        if (playerWon)
+        {
+            int xp = ExperienceSystem.CalculateXP(enemyUnits);
+            int gold = ExperienceSystem.CalculateGold(enemyUnits);
+            battleResultUI.ShowVictory(xp, gold);
+        }
+        else
+        {
+            battleResultUI.ShowDefeat();
+        }
     }
 
     private void CleanUp()

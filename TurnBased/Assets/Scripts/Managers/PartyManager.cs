@@ -1,11 +1,10 @@
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PartyManager : MonoBehaviour
 {
     private static PartyManager _instance;
+    private string playerName;
     public static PartyManager Instance{
         get{
         if(_instance == null)
@@ -20,22 +19,28 @@ public class PartyManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance != null)
+        if (_instance != null)
         {
-            Destroy(this);
+            Destroy(gameObject);
+            return;
         }
 
         _instance = this;
         DontDestroyOnLoad(this.gameObject);
     }
 
-    public void SetPlayerClass(CharacterDataSO characterDataSO)
+    public void SetPlayerClass(string name, CharacterDataSO characterDataSO)
     {
+        playerName = name;
         selectedClass = characterDataSO;
         partyMembers.Clear();
         partyMembers.Add(characterDataSO);
     }
 
+    public string GetPlayerName()
+    {
+        return playerName;
+    }
     public List<CharacterDataSO> GetParty()
     {
         return partyMembers;

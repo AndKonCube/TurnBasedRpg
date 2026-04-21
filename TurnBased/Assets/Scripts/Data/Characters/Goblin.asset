@@ -15,7 +15,7 @@ MonoBehaviour:
   characterName: Goblin
   baseHP: 100
   baseMP: 50
-  baseAttack: 0
+  baseAttack: 15
   baseDefense: 25
   baseMagicPower: 25
   baseSpeed: 15

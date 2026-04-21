@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebd9526ae9c038d4887202ac310cf49e, type: 3}
   m_Name: Mage
   m_EditorClassIdentifier: Assembly-CSharp::CharacterDataSO
-  characterName: Kael'Thas
+  characterName: Mage
   baseHP: 100
   baseMP: 100
-  baseAttack: 20
+  baseAttack: 10
   baseDefense: 20
-  baseMagicPower: 40
+  baseMagicPower: 50
   baseSpeed: 15
   skills:
   - {fileID: 11400000, guid: c1a3398d4fb3f1748a5df8466c73b6be, type: 2}
@@ -26,3 +26,4 @@ MonoBehaviour:
   deathSound: {fileID: 0}
   expirienceReward: 0
   goldReward: 0
+  aiProfile: {fileID: 0}

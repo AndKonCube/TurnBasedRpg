@@ -27,6 +27,13 @@ public class SkillCommand : ActionCommand
                     case SkillCategory.Damage:
                         int damage = DamageCalculator.Calculate(source, target, skill);
                         target.TakeDamage(damage);
+                        if (skill.statusToApply != null)
+                        {
+                            if (Random.Range(0.0f, 1.0f) < skill.applicationChance)
+                            {
+                                StatusEffectHandler.Apply(target, skill.statusToApply);
+                            }
+                        }
                         break;
                     case SkillCategory.Heal:
                         target.HealHP(skill.basePower);
@@ -34,15 +41,15 @@ public class SkillCommand : ActionCommand
                     case SkillCategory.StatusApply:
                         if (Random.Range(0.0f, 1.0f) < skill.applicationChance)
                         {
-                            //StatusEffectHandler.Apply(target, skill.statusToApply);
+                            StatusEffectHandler.Apply(target, skill.statusToApply);
                         }
                         break;
                     case SkillCategory.Buff:
-                    //TODO: Add logic later 
-                    break;
+                        //TODO: Add logic later 
+                        break;
                     case SkillCategory.Debuff:
-                    //TODO: Add logic later
-                    break;
+                        //TODO: Add logic later
+                        break;
                 }
             }
         }

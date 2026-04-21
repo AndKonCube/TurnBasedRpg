@@ -38,7 +38,7 @@ public static class EnemyAI
     public static CombatUnit GetRandomAliveTarget(List<CombatUnit> playerUnits)
     {
         List<CombatUnit> aliveTargets = playerUnits.FindAll(unit=> unit.isAlive);
-        if(aliveTargets.Count == null) return null;
+        if(aliveTargets.Count == 0) return null;
 
         return aliveTargets[Random.Range(0,aliveTargets.Count)];
     }

@@ -20,7 +20,8 @@ MonoBehaviour:
   costType: 0
   costAmount: 10
   basePower: 25
+  scalingStat: Attack
   statusToApply: {fileID: 11400000, guid: 389fb02b8c615ad46b2eb1f473c1d0b4, type: 2}
-  applicationChance: 30
+  applicationChance: 1
   animationTrigger: 
   soundEffect: {fileID: 0}
