@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 using UnityEngine;
 
 public class BattleManager : MonoBehaviour
@@ -13,7 +12,7 @@ public class BattleManager : MonoBehaviour
     bool playerWon;
     bool isBattleOver;
 
-    [SerializeField]BattleResultUI battleResultUI;
+    [SerializeField] BattleResultUI battleResultUI;
     [SerializeField] BattleStateMachine battleFsm;
     [SerializeField] GameObject playerPanel;
     [SerializeField] ActionsMenuUI actionMenuUI;
@@ -21,6 +20,8 @@ public class BattleManager : MonoBehaviour
     [SerializeField] GameEventSO OnTurnStarted;
     [SerializeField] private GameObject combatUnitPrefab;
     [SerializeField] private BattleLogUI battleLog;
+    [SerializeField] BattleHUD battleHUD;
+    [SerializeField] LevelUpUI levelUpUI;
 
     public bool IsBattleOver()
     {
@@ -63,6 +64,7 @@ public class BattleManager : MonoBehaviour
             enemyUnits.Add(unit);
         }
 
+        battleHUD.Initialize(playerUnits, enemyUnits);
         battleFsm.Start();
     }
 
@@ -105,6 +107,7 @@ public class BattleManager : MonoBehaviour
             battleLog.Log(actingUnit.data.characterName + " uses " + skillCmd.skill.skillName + "!");
 
         command.Execute();
+        battleHUD.RefreshAllCards();
 
         foreach (CombatUnit unit in playerUnits)
             battleLog.Log(unit.data.characterName + " HP: " + unit.GetCurrentHP());
@@ -144,7 +147,19 @@ public class BattleManager : MonoBehaviour
     {
         foreach (CombatUnit unit in Enumerable.Concat<CombatUnit>(playerUnits, enemyUnits))
         {
-            StatusEffectHandler.Tick(unit, TickMoment.EndOfTurn);
+            StatusEffectHandler.Tick(unit, TickMoment.EndOfTurn, battleLog);
+        }
+        battleHUD.RefreshAllCards();
+
+        battleHUD.RefreshAllCards();
+
+        foreach (CombatUnit unit in playerUnits)
+        {
+            battleLog.Log($"{unit.data.characterName} HP: {unit.GetCurrentHP()}");
+        }
+        foreach (CombatUnit unit in enemyUnits)
+        {
+            battleLog.Log($"{unit.data.characterName} HP: {unit.GetCurrentHP()}");
         }
     }
 
@@ -183,6 +198,7 @@ public class BattleManager : MonoBehaviour
         {
             int xp = ExperienceSystem.CalculateXP(enemyUnits);
             int gold = ExperienceSystem.CalculateGold(enemyUnits);
+            PartyManager.Instance.AddXP(xp);
             battleResultUI.ShowVictory(xp, gold);
         }
         else

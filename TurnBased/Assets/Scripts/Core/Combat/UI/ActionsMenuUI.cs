@@ -12,16 +12,11 @@ public class ActionsMenuUI : MonoBehaviour
 
     public void Show(CombatUnit unit)
     {
-        Debug.Log("Unit: " + unit);
-        Debug.Log("Unit data: " + unit.data);
-        Debug.Log("Unit skills: " + unit.data.skills);
         currentUnit = unit;
         ClearSkillButtons();
         foreach (SkillDataSO skill in unit.data.skills)
         {
-            Debug.Log("SkillButtonPrefab: " + skillButtonPrefab);
             GameObject button = Instantiate(skillButtonPrefab, skillButtonContainer);
-            Debug.Log("ButtonUI component: " + button.GetComponent<SkillButtonUI>());
             SkillButtonUI buttonUI = button.GetComponent<SkillButtonUI>();
             buttonUI.SetUp(skill, this);
         }

@@ -5,6 +5,8 @@ public static class StatusEffectHandler
 {
     public static void Apply(CombatUnit unit, StatusEffectSO effect)
     {
+        Debug.Log("Applying effect: " + effect);
+        Debug.Log("Effect name: " + effect?.effectName);
         foreach (StatusEffectInstance existing in unit.activeEffects)
         {
             if (existing.statusType == effect.statusType)
@@ -17,31 +19,34 @@ public static class StatusEffectHandler
         unit.activeEffects.Add(new StatusEffectInstance(effect));
     }
 
-    public static void Tick(CombatUnit unit, TickMoment moment)
+    public static void Tick(CombatUnit unit, TickMoment moment, BattleLogUI log = null)
     {
         foreach (StatusEffectInstance effect in unit.activeEffects)
         {
             if (effect.tickMoment == moment)
             {
-                ApplyTickEffect(unit, effect);
+                ApplyTickEffect(unit, effect,log);
                 effect.remainingTurns--;
             }
         }
         unit.activeEffects.RemoveAll(effect => effect.remainingTurns <= 0);
     }
 
-    private static void ApplyTickEffect(CombatUnit unit, StatusEffectInstance effect)
+    private static void ApplyTickEffect(CombatUnit unit, StatusEffectInstance effect, BattleLogUI logUI)
     {
         switch (effect.statusType)
         {
             case StatusType.Poison:
                 unit.TakeDamage(effect.powerPerTick);
+                logUI.Log($"{unit.data.characterName} takes {effect.powerPerTick} {effect.statusType} damage!");
                 break;
             case StatusType.Burn:
                 unit.TakeDamage(effect.powerPerTick);
+                logUI.Log($"{unit.data.characterName} takes {effect.powerPerTick} {effect.statusType} damage!");
                 break;
             case StatusType.Bleed:
                 unit.TakeDamage(effect.powerPerTick);
+                logUI.Log($"{unit.data.characterName} takes {effect.powerPerTick} {effect.statusType} damage!");
                 break;
             case StatusType.AttackUp:
                 unit.attackModifier += effect.powerPerTick;
@@ -51,6 +56,7 @@ public static class StatusEffectHandler
                 break;
             case StatusType.Stun:
                 unit.isStunned = true;
+                logUI.Log($"{unit.data.characterName} is Stunned!");
                 break;
         }
 

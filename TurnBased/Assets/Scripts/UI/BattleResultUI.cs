@@ -10,15 +10,19 @@ public class BattleResultUI : MonoBehaviour
     [SerializeField] TMP_Text xpGainedText;
     [SerializeField] TMP_Text goldGainedText;
     [SerializeField] Button continueButton;
+    [SerializeField] GameObject battleHUDPanel;
 
+ 
     void Start()
     {
         continueButton.onClick.AddListener(()=> SceneManager.LoadScene("CharacterCreation"));
         resultPanel.SetActive(false);
+        battleHUDPanel.SetActive(true);
     }
 
     public void ShowVictory(int xpGained, int goldGained)
     {
+        battleHUDPanel.SetActive(false);
         resultPanel.SetActive(true);
         resultTitleText.text = "Victory";
         xpGainedText.text = $"Xp Gained: {xpGained}";
@@ -27,6 +31,7 @@ public class BattleResultUI : MonoBehaviour
 
     public void ShowDefeat()
     {
+        battleHUDPanel.SetActive(false);
         resultPanel.SetActive(true);
         resultPanel.SetActive(true);
         resultTitleText.text = "Defeat";

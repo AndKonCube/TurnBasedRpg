@@ -41,6 +41,7 @@ public class SkillCommand : ActionCommand
                     case SkillCategory.StatusApply:
                         if (Random.Range(0.0f, 1.0f) < skill.applicationChance)
                         {
+                            Debug.Log("statusToApply: " + skill.statusToApply);
                             StatusEffectHandler.Apply(target, skill.statusToApply);
                         }
                         break;

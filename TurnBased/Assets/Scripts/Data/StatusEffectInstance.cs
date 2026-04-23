@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class StatusEffectInstance : MonoBehaviour
+public class StatusEffectInstance
 {
     public StatusEffectSO statusEffect;
     public int remainingTurns;

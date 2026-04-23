@@ -1,15 +1,16 @@
 using TMPro;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UnitHUDCard : MonoBehaviour
 {
-    TMP_Text unitNameText;
+    [SerializeField] TMP_Text unitNameText;
+    [SerializeField] Image unitSprite;
     [SerializeField] Image hpBarFill;
-    Slider hpBar;
-    TMP_Text hpText;
-    CombatUnit unit;
+    [SerializeField] Slider hpBar;
+    [SerializeField] TMP_Text hpText;
+
+    private CombatUnit unit;
 
     public void SetUp(CombatUnit combatUnit)
     {
@@ -17,26 +18,25 @@ public class UnitHUDCard : MonoBehaviour
         unitNameText.text = unit.data.characterName;
         hpBar.maxValue = unit.data.baseHP;
         hpBar.value = unit.GetCurrentHP();
-        hpText.text = $"{unit.GetCurrentHP().ToString()} / {unit.data.baseHP}";
+        hpText.text = $"{unit.GetCurrentHP()} / {unit.data.baseHP}";
+        hpBarFill.color = Color.green;
+
+        if(unit.data.sprite != null)
+        unitSprite.sprite = unit.data.sprite;
     }
 
     public void UpdateHP()
     {
         hpBar.value = unit.GetCurrentHP();
-        hpText.text = $"{unit.GetCurrentHP().ToString()} / {unit.data.baseHP}";
+        hpText.text = $"{unit.GetCurrentHP()} / {unit.data.baseHP}";
+
         float hpPercent = (float)unit.GetCurrentHP() / unit.data.baseHP;
 
-        if (unit.GetCurrentHP() > 0.5)
-        {
+        if (hpPercent > 0.5f)
             hpBarFill.color = Color.green;
-        }
-        if (unit.GetCurrentHP() <=  0.5)
-        {
+        else if (hpPercent > 0.25f)
             hpBarFill.color = Color.yellow;
-        }
-        if (unit.GetCurrentHP() < 0.25)
-        {
-            Color color = Color.red;
-        }
+        else
+            hpBarFill.color = Color.red;
     }
 }

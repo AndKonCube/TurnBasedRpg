@@ -18,6 +18,7 @@ public class CharacterDataSO : ScriptableObject
     public int expirienceReward;
     public int goldReward;
     public AIBehaviorSO aiProfile;
+    public List<LevelUpDataSO> levelProgression;
 
 
 }

@@ -4,18 +4,32 @@ using UnityEngine;
 public class PartyManager : MonoBehaviour
 {
     private static PartyManager _instance;
-    private string playerName;
-    public static PartyManager Instance{
-        get{
-        if(_instance == null)
-            Debug.Log("[PartyManager]: PartyManager is null");    
-        
-        return _instance;
+    public static PartyManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+                Debug.LogWarning("[PartyManager]: Instance is null");
+            return _instance;
         }
     }
 
-    [SerializeField] CharacterDataSO selectedClass;
-    [SerializeField] List<CharacterDataSO> partyMembers;
+    private string playerName;
+    private CharacterDataSO selectedClass;
+    private List<CharacterDataSO> partyMembers;
+    private List<SkillDataSO> unlockedSkills;
+
+    public int currentLevel = 1;
+    public int currentXP;
+    public int currentHP;
+    public int currentMP;
+    public int bonusAttack;
+    public int bonusDefense;
+    public int bonusMagicPower;
+    public int bonusSpeed;
+    public int bonusStatPoints;
+
+    [SerializeField] private LevelUpUI levelUpUI;
 
     void Awake()
     {
@@ -24,9 +38,10 @@ public class PartyManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         _instance = this;
-        DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(gameObject);
+        partyMembers = new List<CharacterDataSO>();
+        unlockedSkills = new List<SkillDataSO>();
     }
 
     public void SetPlayerClass(string name, CharacterDataSO characterDataSO)
@@ -37,12 +52,43 @@ public class PartyManager : MonoBehaviour
         partyMembers.Add(characterDataSO);
     }
 
-    public string GetPlayerName()
+    public string GetPlayerName() => playerName;
+    public List<CharacterDataSO> GetParty() => partyMembers;
+
+    public void AddXP(int amount)
     {
-        return playerName;
+        currentXP += amount;
+        int newLevel = ExperienceSystem.GetLevelFromXP(currentXP);
+        if (newLevel > currentLevel)
+            ProcessLevelUp(newLevel);
     }
-    public List<CharacterDataSO> GetParty()
+
+    private void ProcessLevelUp(int newLevel)
     {
-        return partyMembers;
+        SkillDataSO lastUnlocked = null;
+
+        for (int level = currentLevel + 1; level <= newLevel; level++)
+        {
+            if (level - 1 >= selectedClass.levelProgression.Count) break;
+
+            LevelUpDataSO levelData = selectedClass.levelProgression[level - 1];
+            currentHP += levelData.autoHPGrowth;
+            currentMP += levelData.autoMPGRowth;
+            bonusStatPoints += levelData.bonusStatPoints;
+
+            if (levelData.skillUnlocked != null)
+            {
+                unlockedSkills.Add(levelData.skillUnlocked);
+                lastUnlocked = levelData.skillUnlocked;
+            }
+        }
+
+        currentLevel = newLevel;
+
+        LevelUpUI levelUpUI = FindObjectOfType<LevelUpUI>();
+        if(levelUpUI != null)
+        levelUpUI.Show(newLevel, bonusStatPoints, lastUnlocked);
+        else
+        Debug.Log($"[PartyManager]: Level up UI doenst exists");
     }
 }

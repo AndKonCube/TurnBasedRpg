@@ -21,7 +21,7 @@ MonoBehaviour:
   baseSpeed: 15
   skills:
   - {fileID: 11400000, guid: 2e390f257738051419a5c9ba34f9ed25, type: 2}
-  sprite: {fileID: 0}
+  sprite: {fileID: 1767114075, guid: 4404c6c566e0ea24dac59226412af541, type: 3}
   battleAnimator: {fileID: 0}
   deathSound: {fileID: 0}
   expirienceReward: 0

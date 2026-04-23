@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ebd9526ae9c038d4887202ac310cf49e, type: 3}
-  m_Name: Goblin
+  m_Name: Ranger
   m_EditorClassIdentifier: Assembly-CSharp::CharacterDataSO
-  characterName: Goblin
+  characterName: Ranger
   baseHP: 100
-  baseMP: 50
-  baseAttack: 15
-  baseDefense: 25
-  baseMagicPower: 25
-  baseSpeed: 15
+  baseMP: 100
+  baseAttack: 25
+  baseDefense: 15
+  baseMagicPower: 10
+  baseSpeed: 30
   skills:
-  - {fileID: 11400000, guid: 4f286ac8ed2d41a43a395e70590b585c, type: 2}
-  sprite: {fileID: -1531113343, guid: 4404c6c566e0ea24dac59226412af541, type: 3}
+  - {fileID: 11400000, guid: 113d336282790ee4580a9873f7286508, type: 2}
+  sprite: {fileID: -1534723104, guid: 4404c6c566e0ea24dac59226412af541, type: 3}
   battleAnimator: {fileID: 0}
   deathSound: {fileID: 0}
-  expirienceReward: 50
-  goldReward: 10
-  aiProfile: {fileID: 11400000, guid: 56288f036886bac45bd75c79921c4574, type: 2}
+  expirienceReward: 0
+  goldReward: 0
+  aiProfile: {fileID: 0}

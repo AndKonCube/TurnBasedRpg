@@ -7,11 +7,13 @@ public class BattleTest : MonoBehaviour
     [SerializeField] List<CharacterDataSO> playerData;
     [SerializeField] List<CharacterDataSO> enemyData;
 
-void Start()
-{
-    battleManager.StartBattle(
-        PartyManager.Instance.GetParty(),
-        enemyData
-    );
-}
+    void Start()
+    {
+        battleManager.StartBattle(
+            PartyManager.Instance.GetParty(),
+            enemyData
+        );
+        //battleManager.StartBattle(
+        // playerData,enemyData);
+    }
 }
