@@ -628,8 +628,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23e957a533aefd74292f9eada024b4a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PartyManager
-  selectedClass: {fileID: 0}
-  partyMembers: []
+  currentLevel: 1
+  currentXP: 0
+  currentHP: 0
+  currentMP: 0
+  bonusAttack: 0
+  bonusDefense: 0
+  bonusMagicPower: 0
+  bonusSpeed: 0
+  bonusStatPoints: 0
+  levelUpUI: {fileID: 0}
 --- !u!1 &1145054859
 GameObject:
   m_ObjectHideFlags: 0
@@ -783,8 +791,8 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -1241,6 +1249,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 97d09a8f1996e7c42b38e48436c67ea0, type: 2}
   - {fileID: 11400000, guid: b5869f5e0207351479941acf3a7fd8ef, type: 2}
   - {fileID: 11400000, guid: 31b9e90a83652f14983273454758118b, type: 2}
+  - {fileID: 11400000, guid: 6a0e4c0856bc008479d7305bde464827, type: 2}
 --- !u!1 &1724642831
 GameObject:
   m_ObjectHideFlags: 0

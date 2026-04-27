@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BattleManager : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private BattleLogUI battleLog;
     [SerializeField] BattleHUD battleHUD;
     [SerializeField] LevelUpUI levelUpUI;
+    [SerializeField] GameObject fleeButton;
 
     public bool IsBattleOver()
     {
@@ -216,5 +218,13 @@ public class BattleManager : MonoBehaviour
 
         playerUnits.Clear();
         enemyUnits.Clear();
+    }
+
+    public void Flee()
+    {
+        isBattleOver = true;
+        playerPanel.SetActive(false);
+        fleeButton.SetActive(false);
+        battleResultUI.ShowDefeat();
     }
 }

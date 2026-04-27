@@ -27,3 +27,5 @@ MonoBehaviour:
   expirienceReward: 0
   goldReward: 0
   aiProfile: {fileID: 0}
+  levelProgression:
+  - {fileID: 11400000, guid: 6dd2f6f313e35fb468f1b58fc6e72f07, type: 2}

@@ -10,22 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ebd9526ae9c038d4887202ac310cf49e, type: 3}
-  m_Name: Warrior
+  m_Name: GoblinMage
   m_EditorClassIdentifier: Assembly-CSharp::CharacterDataSO
-  characterName: Warrior
+  characterName: Goblin Mage
   baseHP: 100
-  baseMP: 50
-  baseAttack: 25
-  baseDefense: 30
-  baseMagicPower: 10
-  baseSpeed: 15
+  baseMP: 100
+  baseAttack: 10
+  baseDefense: 10
+  baseMagicPower: 25
+  baseSpeed: 10
   skills:
-  - {fileID: 11400000, guid: 2e390f257738051419a5c9ba34f9ed25, type: 2}
-  sprite: {fileID: 1767114075, guid: 4404c6c566e0ea24dac59226412af541, type: 3}
+  - {fileID: 11400000, guid: c1a3398d4fb3f1748a5df8466c73b6be, type: 2}
+  sprite: {fileID: 0}
   battleAnimator: {fileID: 0}
   deathSound: {fileID: 0}
-  expirienceReward: 0
-  goldReward: 0
-  aiProfile: {fileID: 0}
-  levelProgression:
-  - {fileID: 11400000, guid: bbc03e20af9b92c48bfd96684204fcde, type: 2}
+  expirienceReward: 70
+  goldReward: 30
+  aiProfile: {fileID: 11400000, guid: 56288f036886bac45bd75c79921c4574, type: 2}
+  levelProgression: []

@@ -4,16 +4,16 @@ using UnityEngine;
 public class BattleTest : MonoBehaviour
 {
     [SerializeField] BattleManager battleManager;
+    [SerializeField] EncounterManager encounterManager;
     [SerializeField] List<CharacterDataSO> playerData;
     [SerializeField] List<CharacterDataSO> enemyData;
 
-    void Start()
-    {
-        battleManager.StartBattle(
-            PartyManager.Instance.GetParty(),
-            enemyData
-        );
-        //battleManager.StartBattle(
-        // playerData,enemyData);
-    }
+void Start()
+{
+    EncounterManager.Instance.GenerateEncounter();
+    battleManager.StartBattle(
+        PartyManager.Instance.GetParty(),
+        EncounterManager.Instance.GetCurrrentEnemies()
+    );
+}
 }
