@@ -10,14 +10,14 @@ public class SkillCommand : ActionCommand
         this.skill = skill;
     }
 
-    public override void Execute()
+    public override int Execute()
     {
         if (!source.HasEnoughMP(skill.costAmount))
-        {
-            return;
-        }
+            return 0;
 
         source.SpendMP(skill.costAmount);
+
+        int totalDamage = 0;
         foreach (CombatUnit target in targets)
         {
             if (target.isAlive)
@@ -27,32 +27,25 @@ public class SkillCommand : ActionCommand
                     case SkillCategory.Damage:
                         int damage = DamageCalculator.Calculate(source, target, skill);
                         target.TakeDamage(damage);
-                        if (skill.statusToApply != null)
-                        {
-                            if (Random.Range(0.0f, 1.0f) < skill.applicationChance)
-                            {
-                                StatusEffectHandler.Apply(target, skill.statusToApply);
-                            }
-                        }
+                        totalDamage += damage;
+                        if (skill.statusToApply != null &&
+                            Random.Range(0f, 1f) < skill.applicationChance)
+                            StatusEffectHandler.Apply(target, skill.statusToApply);
                         break;
                     case SkillCategory.Heal:
                         target.HealHP(skill.basePower);
                         break;
                     case SkillCategory.StatusApply:
-                        if (Random.Range(0.0f, 1.0f) < skill.applicationChance)
-                        {
-                            Debug.Log("statusToApply: " + skill.statusToApply);
+                        if (skill.statusToApply != null &&
+                            Random.Range(0f, 1f) < skill.applicationChance)
                             StatusEffectHandler.Apply(target, skill.statusToApply);
-                        }
                         break;
                     case SkillCategory.Buff:
-                        //TODO: Add logic later 
-                        break;
                     case SkillCategory.Debuff:
-                        //TODO: Add logic later
                         break;
                 }
             }
         }
+        return totalDamage;
     }
 }

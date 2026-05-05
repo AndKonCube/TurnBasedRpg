@@ -6,7 +6,7 @@ public abstract class ActionCommand
    public CombatUnit source;
    public List<CombatUnit> targets;
     
-    public virtual void Execute(){}
+  public abstract int Execute();
 
     public ActionCommand(CombatUnit source,List<CombatUnit> targets)
     {

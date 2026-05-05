@@ -5,18 +5,21 @@ public class AttackCommand : ActionCommand
 {
     public AttackCommand(CombatUnit source, List<CombatUnit> targets) : base(source, targets)
     {
-        
+
     }
 
-    public override void Execute()
+    public override int Execute()
     {
-        foreach(CombatUnit target in targets)
+        int totalDamage = 0;
+        foreach (CombatUnit target in targets)
         {
             if (target.isAlive)
             {
-                int damage= DamageCalculator.Calculate(source,target,null);
+                int damage = DamageCalculator.Calculate(source, target, null);
                 target.TakeDamage(damage);
+                totalDamage += damage;
             }
         }
+        return totalDamage;
     }
 }

@@ -8,14 +8,13 @@ public class ItemCommand : ActionCommand
     public ItemCommand(CombatUnit source, System.Collections.Generic.List<CombatUnit> targets,
                        ItemDataSO item, Inventory inventory) : base(source, targets)
     {
-        this.itemData  = item;
+        this.itemData = item;
         this.inventory = inventory;
     }
 
-    public override void Execute()
+    public override int Execute()
     {
-        if (!inventory.HasItem(itemData))
-            return;
+        if (!inventory.HasItem(itemData)) return 0;
 
         foreach (CombatUnit target in targets)
         {
@@ -26,26 +25,22 @@ public class ItemCommand : ActionCommand
                     case ItemEffectType.RestoreHP:
                         target.HealHP(itemData.potency);
                         break;
-
                     case ItemEffectType.RestoreMP:
                         target.RestoreMP(itemData.potency);
                         break;
-
                     case ItemEffectType.CureStatus:
                         StatusEffectHandler.RemoveAll(target);
                         break;
-
                     case ItemEffectType.RaiseAttack:
                         target.attackModifier += itemData.potency;
                         break;
-
                     case ItemEffectType.RaiseDefense:
                         target.defenseModifier += itemData.potency;
                         break;
                 }
             }
         }
-
         inventory.RemoveItem(itemData);
+        return 0;
     }
 }

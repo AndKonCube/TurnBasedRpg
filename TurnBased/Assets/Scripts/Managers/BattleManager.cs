@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class BattleManager : MonoBehaviour
 {
@@ -22,23 +21,24 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private GameObject combatUnitPrefab;
     [SerializeField] private BattleLogUI battleLog;
     [SerializeField] BattleHUD battleHUD;
-    [SerializeField] LevelUpUI levelUpUI;
+    [SerializeField] GameObject levelUpPanel;
     [SerializeField] GameObject fleeButton;
+    [SerializeField] private float unitSpacing = 2.5f;
+    [SerializeField] private float playerZPos = 3f;
+    [SerializeField] private float enemyZPos = -3f;
 
-    public bool IsBattleOver()
-    {
-        return isBattleOver;
-    }
+    public bool IsBattleOver() => isBattleOver;
 
     void Awake()
     {
         playerUnits = new List<CombatUnit>();
-        enemyUnits = new List<CombatUnit>();
+        enemyUnits  = new List<CombatUnit>();
     }
 
     void Start()
     {
         if (playerPanel == null) return;
+        if (levelUpPanel != null) levelUpPanel.SetActive(false);
     }
 
     public CombatUnit GetFirstAliveEnemy()
@@ -46,35 +46,44 @@ public class BattleManager : MonoBehaviour
         return enemyUnits.Find(unit => unit.isAlive);
     }
 
+    public List<CombatUnit> GetAliveEnemies()
+    {
+        return enemyUnits.FindAll(unit => unit.isAlive);
+    }
+
     public void StartBattle(List<CharacterDataSO> playerData, List<CharacterDataSO> enemyData)
     {
-        foreach (CharacterDataSO data in playerData)
+        for (int i = 0; i < playerData.Count; i++)
         {
-            GameObject obj = Instantiate(combatUnitPrefab);
+            GameObject obj  = Instantiate(combatUnitPrefab);
             CombatUnit unit = obj.GetComponent<CombatUnit>();
-            unit.Initialize(data);
-            unit.isPlayer = true;
+            unit.Initialize(playerData[i]);
+            unit.isPlayer          = true;
+            obj.transform.position = CalculateSpawnPosition(i, playerData.Count, true);
             playerUnits.Add(unit);
         }
 
-        foreach (CharacterDataSO data in enemyData)
+        for (int i = 0; i < enemyData.Count; i++)
         {
-            GameObject obj = Instantiate(combatUnitPrefab);
+            GameObject obj  = Instantiate(combatUnitPrefab);
             CombatUnit unit = obj.GetComponent<CombatUnit>();
-            unit.Initialize(data);
-            unit.isPlayer = false;
+            unit.Initialize(enemyData[i]);
+            unit.isPlayer          = false;
+            obj.transform.position = CalculateSpawnPosition(i, enemyData.Count, false);
             enemyUnits.Add(unit);
         }
 
         battleHUD.Initialize(playerUnits, enemyUnits);
+        battleLog.Clear();
         battleFsm.Start();
     }
 
     public void BuildTurnOrder()
     {
         List<CombatUnit> allUnits = playerUnits.Concat(enemyUnits).ToList();
-        turnOrder = TurnOrderSystem.Sort(allUnits);
+        turnOrder   = TurnOrderSystem.Sort(allUnits);
         currentUnit = turnOrder.Dequeue();
+        battleLog.NextTurn();
         if (OnTurnStarted != null) OnTurnStarted.Raise();
         PromptPlayerAction();
     }
@@ -103,18 +112,34 @@ public class BattleManager : MonoBehaviour
     {
         CombatUnit actingUnit = command.source;
 
-        if (command is AttackCommand)
-            battleLog.Log(actingUnit.data.characterName + " attacks!");
-        else if (command is SkillCommand skillCmd)
-            battleLog.Log(actingUnit.data.characterName + " uses " + skillCmd.skill.skillName + "!");
-
-        command.Execute();
+        int damage = command.Execute();
         battleHUD.RefreshAllCards();
 
+        if (command is AttackCommand)
+        {
+            if (damage > 0)
+                battleLog.LogDamage(
+                    actingUnit.data.characterName,
+                    command.targets[0].data.characterName,
+                    damage);
+        }
+        else if (command is SkillCommand skillCmd)
+        {
+            battleLog.Log(
+                actingUnit.data.characterName + " uses " + skillCmd.skill.skillName + "!",
+                BattleLogUI.LogType.System);
+
+            if (damage > 0)
+                battleLog.LogDamage(
+                    actingUnit.data.characterName,
+                    command.targets[0].data.characterName,
+                    damage);
+        }
+
         foreach (CombatUnit unit in playerUnits)
-            battleLog.Log(unit.data.characterName + " HP: " + unit.GetCurrentHP());
+            battleLog.Log($"{unit.data.characterName} HP: {unit.GetCurrentHP()}");
         foreach (CombatUnit unit in enemyUnits)
-            battleLog.Log(unit.data.characterName + " HP: " + unit.GetCurrentHP());
+            battleLog.Log($"{unit.data.characterName} HP: {unit.GetCurrentHP()}");
 
         yield return new WaitForSeconds(2);
         CheckBattleOver();
@@ -133,9 +158,7 @@ public class BattleManager : MonoBehaviour
         {
             ActionCommand command = EnemyAI.DecideAction(currentUnit, playerUnits);
             if (command != null)
-            {
                 yield return StartCoroutine(ExecuteAction(command, false));
-            }
 
             if (turnOrder.Count == 0) break;
 
@@ -148,21 +171,14 @@ public class BattleManager : MonoBehaviour
     public void TickStatusEffects()
     {
         foreach (CombatUnit unit in Enumerable.Concat<CombatUnit>(playerUnits, enemyUnits))
-        {
             StatusEffectHandler.Tick(unit, TickMoment.EndOfTurn, battleLog);
-        }
-        battleHUD.RefreshAllCards();
 
         battleHUD.RefreshAllCards();
 
         foreach (CombatUnit unit in playerUnits)
-        {
             battleLog.Log($"{unit.data.characterName} HP: {unit.GetCurrentHP()}");
-        }
         foreach (CombatUnit unit in enemyUnits)
-        {
             battleLog.Log($"{unit.data.characterName} HP: {unit.GetCurrentHP()}");
-        }
     }
 
     private void AdvanceTurn()
@@ -181,13 +197,13 @@ public class BattleManager : MonoBehaviour
     {
         if (enemyUnits.All(unit => !unit.isAlive))
         {
-            playerWon = true;
+            playerWon    = true;
             isBattleOver = true;
             battleFsm.ChangePhase(BattlePhase.BattleOver);
         }
         else if (playerUnits.All(unit => !unit.isAlive))
         {
-            playerWon = false;
+            playerWon    = false;
             isBattleOver = true;
             battleFsm.ChangePhase(BattlePhase.BattleOver);
         }
@@ -195,10 +211,11 @@ public class BattleManager : MonoBehaviour
 
     public void DeclareBattleResult()
     {
-        OnBattleEnded.Raise();
+        if (OnBattleEnded != null) OnBattleEnded.Raise();
+
         if (playerWon)
         {
-            int xp = ExperienceSystem.CalculateXP(enemyUnits);
+            int xp   = ExperienceSystem.CalculateXP(enemyUnits);
             int gold = ExperienceSystem.CalculateGold(enemyUnits);
             PartyManager.Instance.AddXP(xp);
             battleResultUI.ShowVictory(xp, gold);
@@ -207,6 +224,26 @@ public class BattleManager : MonoBehaviour
         {
             battleResultUI.ShowDefeat();
         }
+
+        fleeButton.SetActive(false);
+    }
+
+    public void Flee()
+    {
+        isBattleOver = true;
+        playerPanel.SetActive(false);
+        fleeButton.SetActive(false);
+        battleResultUI.ShowDefeat();
+    }
+
+    private Vector3 CalculateSpawnPosition(int index, int totalUnits, bool isPlayer)
+    {
+        float totalWidth = (totalUnits - 1) * unitSpacing;
+        float startX     = -totalWidth / 2f;
+        float xPos       = startX + index * unitSpacing;
+        float zPos       = isPlayer ? playerZPos : enemyZPos;
+
+        return new Vector3(xPos, 0f, zPos);
     }
 
     private void CleanUp()
@@ -218,13 +255,5 @@ public class BattleManager : MonoBehaviour
 
         playerUnits.Clear();
         enemyUnits.Clear();
-    }
-
-    public void Flee()
-    {
-        isBattleOver = true;
-        playerPanel.SetActive(false);
-        fleeButton.SetActive(false);
-        battleResultUI.ShowDefeat();
     }
 }

@@ -18,7 +18,7 @@ MonoBehaviour:
   skillCategory: 0
   targetType: 1
   costType: 0
-  costAmount: 5
+  costAmount: 10
   basePower: 40
   scalingStat: MagicPower
   statusToApply: {fileID: 0}
